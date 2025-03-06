@@ -7,6 +7,7 @@ import sys
 import codecs
 from jinja2 import Environment, FileSystemLoader, Template
 
+
 class JinjaTemplateReportMachine:
 
     def render(self, data: dict, template: Template):
@@ -14,10 +15,7 @@ class JinjaTemplateReportMachine:
 
 
 class LocalReportGenerator:
-    def __init__(self,
-            template_file, 
-            data_file
-    ):
+    def __init__(self, template_file, data_file):
         self._jtrm = JinjaTemplateReportMachine()
         self._template_file = template_file
         self._data_file = data_file
@@ -39,6 +37,7 @@ class LocalReportGenerator:
 
         return self._jtrm.render(data, template)
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(prog="jtpm")
     parser.add_argument("-t", "--template", required=True, type=str)
@@ -49,10 +48,7 @@ def parse_arguments():
 
 if __name__ == "__main__":
     args = parse_arguments()
-    reporter = LocalReportGenerator(
-        template_file=args.template,
-        data_file=args.data
-    )
+    reporter = LocalReportGenerator(template_file=args.template, data_file=args.data)
 
     report = reporter.render()
     if args.output is None:
@@ -65,4 +61,3 @@ if __name__ == "__main__":
     finally:
         if args.output is not None:
             out.close()
-
