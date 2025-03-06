@@ -7,8 +7,6 @@ import sys
 import codecs
 from jinja2 import Environment, FileSystemLoader, Template
 
-DEFAULT_TEMPLATES_PATH = "./templates"
-
 class JinjaTemplateReportMachine:
 
     def render(self, data: dict, template: Template):
