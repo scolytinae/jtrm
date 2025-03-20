@@ -4,10 +4,12 @@ import argparse
 import json
 import os
 import sys
+import uuid
 import codecs
 import pypandoc
 from jinja2 import Environment, FileSystemLoader, Template
 
+TEMP_REPORT_DIR = os.environ.get("JTRM_TEMP_DIR", "/tmp") 
 
 class JinjaTemplateReportMachine:
 
@@ -18,7 +20,7 @@ class JinjaTemplateReportMachine:
         return pypandoc.convert_text(source=source, to=dest_format, format=source_format)
 
     def convert_file(self, source, source_format, dest, dest_format):
-        pypandoc.convert_file(source_file=source, to=dest_format, format=source_format, outputfile=dest)
+        return pypandoc.convert_file(source_file=source, to=dest_format, format=source_format, outputfile=dest)
 
 
 class LocalReportGenerator(JinjaTemplateReportMachine):
@@ -58,7 +60,7 @@ class LocalReportGenerator(JinjaTemplateReportMachine):
     def _get_template_format(self, file_name):
         fmt = self._get_format(file_name)
         if fmt == "j2":
-            fmt2 = self._get_format(fmt)
+            fmt2 = self._get_format(file_name[:-len(fmt) - 1])
             return fmt2 if fmt2 else fmt
 
         return fmt
@@ -71,11 +73,12 @@ class LocalReportGenerator(JinjaTemplateReportMachine):
         if (self._template_format == self._dest_format):
             self._write_report(rendered)
         else:
-            fname = f"tmp.{self._template_format}"
+            fname = os.path.join(TEMP_REPORT_DIR, f"{str(uuid.uuid4())}.{self._template_format}")
             self._write_file(rendered, fname)
-            converted = self.convert_file(fname, self._template_format, self._dest_file, self._dest_format)
-            os.remove(fname)
-            # self._write_report(converted)
+            try:
+                self.convert_file(fname, self._template_format, self._dest_file, self._dest_format)
+            finally:
+                os.remove(fname)
 
 
 def parse_arguments():
@@ -83,11 +86,16 @@ def parse_arguments():
     parser.add_argument("-t", "--template", required=True, type=str)
     parser.add_argument("-d", "--data", type=str, default="")
     parser.add_argument("-o", "--output", type=str)
-    parser.add_argument("-of", "--output-format", type=str)
+    parser.add_argument("-f", "--output-format", type=str)
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_arguments()
-    reporter = LocalReportGenerator(template_file=args.template, data_file=args.data, dest_file=args.output, dest_format=args.output_format)
+    reporter = LocalReportGenerator(
+        template_file=args.template, 
+        data_file=args.data, 
+        dest_file=args.output, 
+        dest_format=args.output_format
+    )
     reporter.make_report()
