@@ -11,6 +11,12 @@ from jinja2 import Environment, FileSystemLoader, Template
 
 TEMP_REPORT_DIR = os.environ.get("JTRM_TEMP_DIR", "/tmp") 
 
+HELP_DESCRIPTION = """
+Creates a report with required format from jinja template
+
+Uses pandoc installed in system. Without it will not work.
+"""
+
 class JinjaTemplateReportMachine:
 
     def render(self, data: dict, template: Template):
@@ -82,11 +88,24 @@ class LocalReportGenerator(JinjaTemplateReportMachine):
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(prog="jtpm")
-    parser.add_argument("-t", "--template", required=True, type=str)
-    parser.add_argument("-d", "--data", type=str, default="")
-    parser.add_argument("-o", "--output", type=str)
-    parser.add_argument("-f", "--output-format", type=str)
+
+    parser = argparse.ArgumentParser(
+        prog="jtpm",
+        description=HELP_DESCRIPTION,
+        formatter_class=argparse.RawTextHelpFormatter,
+        add_help=False
+    )
+    
+    main_group = parser.add_argument_group("Main arguments")
+    main_group.add_argument("-t", "--template", required=True, type=str, help="Template file name")
+    main_group.add_argument("-o", "--output", type=str, help="Output report file name")
+    main_group.add_argument("-d", "--data", type=str, default="", help="File with data in JSON format")
+
+    optional_group = parser.add_argument_group("Optional arguments")
+    optional_group.add_argument("--template-format", type=str, default="", help="Template file format")
+    optional_group.add_argument("--output-format", type=str, help="Output report format")
+    optional_group.add_argument("-h", "--help", action="help", help="show this help message and exit")
+
     return parser.parse_args()
 
 
