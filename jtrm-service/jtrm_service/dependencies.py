@@ -1,1 +1,1 @@
-from ..jtrm import template_loaders
+from jtrm_core import template_loaders

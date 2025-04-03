@@ -1,19 +1,20 @@
 import typing as t
 from . import settings
-from .dependencies import TemplatesLoaderFactory
+from jtrm_core.template_loaders import TemplatesLoaderFactory
 
-from fastapi import FastAPI, FileResponse
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Json
 
 class GenerateReportModel(BaseModel):
     template: str
-    data: Json[t.Object]
+    data: Json[t.List]
 
 
 app = FastAPI()
 
 
-@app.post("/immediate_report/{item}")
+@app.post("/immediate_report/")
 def generate_report(item: GenerateReportModel, response_class=FileResponse):
     loader = TemplatesLoaderFactory.get_loader(settings.TEMPLATE_LOADER_CONNECTION)
     env = Environment(loader=loader)
