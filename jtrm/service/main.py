@@ -1,20 +1,21 @@
-from typing import Union, Object
-
-# from core import JinjaTemplateReportMachine
-from template_loaders import TemplatesLoaderFactory
+import typing as t
+from . import settings
+from .dependencies.template_loaders import TemplatesLoaderFactory
 
 from fastapi import FastAPI, FileResponse
 from pydantic import BaseModel, Json
 
 class GenerateReportModel(BaseModel):
     template: str
-    data: Json[Object]
+    data: Json[t.Object]
+
 
 app = FastAPI()
 
+
 @app.post("/immediate_report/{item}")
 def generate_report(item: GenerateReportModel, response_class=FileResponse):
-    loader = TemplatesLoaderFactory.get_loader("file://test_bucket")
+    loader = TemplatesLoaderFactory.get_loader(settings.TEMPLATE_LOADER_CONNECTION)
     env = Environment(loader=loader)
     template = env.get_template(item.template)
 
