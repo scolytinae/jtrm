@@ -1,12 +1,9 @@
 [project]
-name = "jtrm"
+name = "jtrm-service"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "argparse>=1.4.0",
-    "fastapi[standard,standart]>=0.115.12",
-    "jinja2>=3.1.5",
-    "pypandoc>=1.15",
+    "fastapi[standard]>=0.115.12",
 ]

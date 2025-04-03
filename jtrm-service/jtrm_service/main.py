@@ -1,6 +1,6 @@
 import typing as t
 from . import settings
-from .dependencies.template_loaders import TemplatesLoaderFactory
+from .dependencies import TemplatesLoaderFactory
 
 from fastapi import FastAPI, FileResponse
 from pydantic import BaseModel, Json
