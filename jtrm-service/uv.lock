@@ -204,7 +204,7 @@ wheels = [
 [[package]]
 name = "jtrm"
 version = "0.1.0"
-source = { editable = "../jtrm-core" }
+source = { editable = "../jtrm" }
 dependencies = [
     { name = "argparse" },
     { name = "jinja2" },
@@ -230,7 +230,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.12" },
-    { name = "jtrm", editable = "../jtrm-core" },
+    { name = "jtrm", editable = "../jtrm" },
 ]
 
 [[package]]

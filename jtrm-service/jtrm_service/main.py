@@ -1,6 +1,6 @@
 import typing as t
 from . import settings
-from jtrm_core.template_loaders import TemplatesLoaderFactory
+from jtrm.template_loaders import TemplatesLoaderFactory
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse

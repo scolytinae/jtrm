@@ -10,4 +10,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-jtrm = { path = "../jtrm-core", editable = true }
+jtrm = { path = "../jtrm", editable = true }
