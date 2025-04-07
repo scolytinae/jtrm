@@ -1,1 +1,2 @@
-from jtrm_core import template_loaders
+from jtrm.template_loaders import TemplatesLoaderFactory
+from jtrm import JinjaTemplateReportMachine

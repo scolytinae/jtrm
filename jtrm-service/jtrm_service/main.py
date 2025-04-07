@@ -1,27 +1,33 @@
 import typing as t
-from . import settings
-from jtrm.template_loaders import TemplatesLoaderFactory
+import logging
+import settings
+from jinja2 import Environment
+from dependencies import TemplatesLoaderFactory, JinjaTemplateReportMachine
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Json
 
 class GenerateReportModel(BaseModel):
     template: str
-    data: Json[t.List]
+    data: t.Dict[t.AnyStr, t.Any]
 
 
 app = FastAPI()
+logger = logging.getLogger('uvicorn.error')
 
 
 @app.post("/immediate_report/")
 def generate_report(item: GenerateReportModel, response_class=FileResponse):
-    loader = TemplatesLoaderFactory.get_loader(settings.TEMPLATE_LOADER_CONNECTION)
+    logger.debug("Immediate report called")
+    factory = TemplatesLoaderFactory()
+    loader = factory.get_loader(settings.TEMPLATE_LOADER_CONNECTION)
     env = Environment(loader=loader)
     template = env.get_template(item.template)
 
     jtrm = JinjaTemplateReportMachine()
-    r = jtrm.render({}, template)
+    r = jtrm.render(item.data, template)
 
     # jtrm = LocalReportGenerator(
     #     template_file=f"./templates/{item.template}",
@@ -31,3 +37,6 @@ def generate_report(item: GenerateReportModel, response_class=FileResponse):
     # )
     # report_file_name = reporter.make_report()
     return r
+
+if __name__ == '__main__':
+    uvicorn.run(app, log_level="trace") 
