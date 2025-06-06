@@ -15,7 +15,7 @@ class GenerateReportModel(BaseModel):
 
 
 app = FastAPI()
-logger = logging.getLogger('uvicorn.error')
+logger = logging.getLogger('jtrm.error')
 
 
 @app.post("/immediate_report/")
